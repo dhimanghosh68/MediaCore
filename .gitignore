@@ -1,0 +1,31 @@
+# Dependencies
+node_modules
+
+# pnpm
+.pnpm-store
+pnpm-lock.yaml
+
+# Turborepo
+.turbo
+
+# Next.js
+.next
+out
+
+# Build
+dist
+coverage
+
+# Environment
+.env
+.env.*
+
+# Logs
+*.log
+
+# IDE
+.vscode
+.idea
+
+# macOS
+.DS_StoreD
