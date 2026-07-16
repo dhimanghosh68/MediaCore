@@ -1,14 +1,17 @@
-import { buildServer } from "./server";
+import { buildServer } from "./server.js";
 
 async function start() {
-    const app = await buildServer();
+  const app = await buildServer();
 
-    await app.listen({
-        port: 4000,
-        host: "0.0.0.0",
-    });
+  await app.listen({
+    port: 4000,
+    host: "0.0.0.0",
+  });
 
-    console.log("API running on http://localhost:4000");
+  console.log("API running on http://localhost:4000");
 }
 
-start();
+start().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
