@@ -20,12 +20,9 @@ coverage
 .env
 .env.*
 
-# Logs
-*.log
-
 # IDE
 .vscode
 .idea
 
 # macOS
-.DS_StoreD
+.DS_Store
