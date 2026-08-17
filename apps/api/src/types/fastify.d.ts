@@ -1,3 +1,4 @@
+import "@fastify/jwt";
 import "fastify";
 import { PrismaClient } from "@prisma/client";
 
