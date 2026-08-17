@@ -1,9 +1,7 @@
 import bcrypt from "bcrypt";
 import { FastifyReply, FastifyRequest } from "fastify";
-import { registerSchema } from "./schema.js";
-
-import { loginSchema } from "./schema.js";
-
+import { registerSchema, loginSchema } from "./schema.js";
+import { prisma } from "../../config/database.js";
 
 export async function register(
   request: FastifyRequest,
@@ -11,7 +9,7 @@ export async function register(
 ) {
   const body = registerSchema.parse(request.body);
 
-  const existingUser = await request.server.prisma.user.findFirst({
+  const existingUser = await prisma.user.findFirst({
     where: {
       OR: [
         { email: body.email },
@@ -26,9 +24,9 @@ export async function register(
     });
   }
 
-  const hashedPassword = await bcrypt.hash(body.password, 10);
+  const hashedPassword = await bcrypt.hash(body.password, 12);
 
-  const user = await request.server.prisma.user.create({
+  const user = await prisma.user.create({
     data: {
       email: body.email,
       username: body.username,
@@ -38,6 +36,7 @@ export async function register(
       id: true,
       email: true,
       username: true,
+      role: true,
       createdAt: true,
     },
   });
@@ -51,22 +50,25 @@ export async function login(
 ) {
   const body = loginSchema.parse(request.body);
 
-  const user = await request.server.prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: {
       email: body.email,
     },
   });
 
   if (!user) {
-    return reply.status(401).send({
+    return reply.code(401).send({
       message: "Invalid credentials",
     });
   }
 
-  const valid = await bcrypt.compare(body.password, user.password);
+  const valid = await bcrypt.compare(
+    body.password,
+    user.password,
+  );
 
   if (!valid) {
-    return reply.status(401).send({
+    return reply.code(401).send({
       message: "Invalid credentials",
     });
   }
@@ -75,6 +77,7 @@ export async function login(
     id: user.id,
     email: user.email,
     username: user.username,
+    role: user.role,
   });
 
   return {
@@ -83,6 +86,7 @@ export async function login(
       id: user.id,
       email: user.email,
       username: user.username,
+      role: user.role,
     },
   };
 }

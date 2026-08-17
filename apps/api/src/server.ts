@@ -3,6 +3,7 @@ import prismaPlugin from "./plugins/prisma.js";
 import jwtPlugin from "./plugins/jwt.js";
 import authPlugin from "./plugins/auth.js";
 import authRoutes from "./modules/auth/routes.js";
+import routes from "./routes/index.js";
 
 export async function buildServer() {
   const app = Fastify({
@@ -13,29 +14,23 @@ export async function buildServer() {
   await app.register(jwtPlugin);
   await app.register(authPlugin);
 
-  app.get("/", async () => {
-    return {
-      name: "MediaCore API",
-      version: "1.0.0",
-      status: "running",
-    };
-  });
+  app.get("/", async () => ({
+    name: "MediaCore API",
+    version: "1.0.0",
+    status: "running",
+  }));
 
-  app.get("/users", async (request) => {
-    return request.server.prisma.user.findMany({
-      select: {
-        id: true,
-        email: true,
-        username: true,
-        role: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
-  });
+  app.get("/health", async () => ({
+    status: "ok",
+    service: "mediacore-api",
+  }));
 
   await app.register(authRoutes, {
     prefix: "/auth",
+  });
+
+  await app.register(routes, {
+    prefix: "/api",
   });
 
   return app;

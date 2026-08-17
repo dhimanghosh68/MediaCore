@@ -10,4 +10,15 @@ declare module "fastify" {
       reply: FastifyReply,
     ) => Promise<void>;
   }
+
+  interface FastifyRequest {
+    user: {
+      id: string;
+      email: string;
+      username: string;
+      role: "USER" | "ADMIN";
+      iat?: number;
+      exp?: number;
+    };
+  }
 }
