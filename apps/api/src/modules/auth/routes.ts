@@ -7,4 +7,12 @@ export default async function authRoutes(app: FastifyInstance) {
   app.post("/register", controller.register);
 
   app.post("/login", controller.login);
+
+  app.get(
+    "/me",
+    {
+      preHandler: [app.authenticate],
+    },
+    controller.me,
+  );
 }

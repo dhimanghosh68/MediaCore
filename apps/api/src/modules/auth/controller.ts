@@ -21,3 +21,7 @@ export async function login(
 ) {
   return authService.login(request, reply);
 }
+
+export async function me(request: FastifyRequest) {
+  return request.user;
+}
